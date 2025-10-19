@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Renacimiento Plenisista · Ciclo 30 días</title>
+  <meta name="theme-color" content="#0b0b0f">
+  <style>
+    :root{
+      --bg:#0b0b0f;
+      --bg2:#121218;
+      --ink:#f5f6ff;
+      --soft:#aeb2c7;
+      --ring:#2a2a36;
+      --ok:#44d48a;
+      --warn:#ff8a5b;
+      --cyan:#63c9ff;
+      --gold:#ffd166;
+      --shadow: 0 12px 40px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0; background:radial-gradient(900px 600px at 0% -10%, #16203d 0%, transparent 55%) , radial-gradient(900px 600px at 100% 110%, #2b1e43 0%, transparent 55%), var(--bg); color:var(--ink); font-family: ui-sans-serif, -apple-system, "SF Pro Text", Segoe UI, Roboto, Helvetica, Arial}
+    header.top{position:sticky; top:0; z-index:5; padding:14px 16px; background:linear-gradient(180deg, rgba(11,11,15,.95), rgba(11,11,15,.7) 70%, transparent); border-bottom:1px solid var(--ring); backdrop-filter: blur(6px)}
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{width:40px; height:40px; border-radius:12px; display:grid; place-items:center; color:#0b0b0f; font-weight:900; background: radial-gradient(circle at 30% 30%, var(--cyan), transparent 60%), radial-gradient(circle at 70% 70%, var(--gold), transparent 55%), linear-gradient(135deg, #1b1f3f, #0f1224); box-shadow:var(--shadow)}
+    h1{margin:0; font-size:clamp(18px,4vw,28px)}
+    .sub{color:var(--soft); font-size:.95rem}
+    .head-actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+    button{appearance:none; border:1px solid var(--ring); background:var(--bg2); color:var(--ink); padding:10px 14px; border-radius:12px; cursor:pointer; box-shadow:var(--shadow)}
+    button:hover{transform:translateY(-1px)}
+    .ok{color:var(--ok); border-color:#274a37}
+    .warn{color:var(--warn); border-color:#553028}
+    .ghost{background:transparent}
+    .wrap{max-width:1200px; margin:0 auto; padding:16px; padding-bottom:120px}
+    .card{background:rgba(17,20,40,.72); border:1px solid var(--ring); border-radius:16px; box-shadow:var(--shadow)}
+    .pad{padding:16px}
+    .stats{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px}
+    .stat{background:rgba(20,24,50,.5); border:1px solid var(--ring); padding:10px 12px; border-radius:12px; color:var(--soft)}
+    .stat b{color:var(--ink)}
+    .bar{width:100%; height:10px; background:#15162a; border:1px solid var(--ring); border-radius:999px; overflow:hidden}
+    .bar>div{height:100%; width:0%; background:linear-gradient(90deg, var(--ok), #79ffbf)}
+    /* grid */
+    .grid{display:grid; grid-template-columns: repeat(4,1fr); gap:12px}
+    @media (min-width:560px){ .grid{grid-template-columns: repeat(6,1fr)} }
+    @media (min-width:900px){ .grid{grid-template-columns: repeat(8,1fr)} }
+    .day{min-height:120px; display:flex; flex-direction:column; gap:8px; justify-content:space-between; position:relative; padding:14px; border-radius:14px; border:1px solid var(--ring); background:linear-gradient(180deg, rgba(23,26,54,.9), rgba(12,14,26,.9)); box-shadow:var(--shadow)}
+    .topline{display:flex; align-items:center; justify-content:space-between}
+    .badge{font-size:.72rem; border:1px solid var(--ring); padding:3px 8px; border-radius:999px; color:var(--soft)}
+    .title{font-size:.95rem; font-weight:600}
+    .phrase{font-size:.86rem; color:#e2e8ff; line-height:1.35; max-height:3.3em; overflow:hidden; text-overflow:ellipsis}
+    .actions{display:flex; align-items:center; justify-content:space-between; gap:8px}
+    .open{background:transparent; border:1px dashed var(--ring); color:var(--cyan); padding:8px 12px; border-radius:10px}
+    .phase{font-size:.75rem; color:var(--soft)}
+    .done{border-color: rgba(68,212,138,.5); background: linear-gradient(180deg, rgba(22,40,30,.85), rgba(14,22,17,.85))}
+    .done::after{content:"✔"; position:absolute; right:10px; bottom:10px; color:var(--ok)}
+    footer.site{position:fixed; bottom:0; left:0; right:0; background:linear-gradient(0deg, rgba(11,11,15,1), rgba(11,11,15,.85) 70%, transparent); backdrop-filter: blur(6px)}
+    .foot{max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 16px; color:var(--soft)}
+    .brand2{color:var(--ink)}
+
+    /* modal */
+    .backdrop{position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.6); z-index:10; padding:16px}
+    .modal{width:min(820px, 100%); background:rgba(17,20,40,1); border:1px solid var(--ring); border-radius:18px; overflow:hidden; box-shadow:var(--shadow)}
+    .modal header{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:16px; background:#111323; border-bottom:1px solid var(--ring)}
+    .modal h2{margin:0; font-size:1.05rem}
+    .content{padding:16px; display:grid; gap:14px}
+    .chips{display:flex; gap:8px; flex-wrap:wrap}
+    .chip{border:1px solid var(--ring); border-radius:999px; padding:4px 10px; color:var(--soft); font-size:.85rem}
+    .m-phrase{font-weight:600; line-height:1.4}
+    .modules{display:grid; grid-template-columns:1fr; gap:12px}
+    @media (min-width:700px){ .modules{grid-template-columns:1fr 1fr} }
+    .mod{border:1px solid var(--ring); border-radius:12px; padding:12px; background:rgba(22,24,44,.9)}
+    .mod h3{margin:0 0 8px 0; font-size:1rem}
+    .mod p{margin:6px 0 10px 0; color:#dee3ff; font-size:.95rem}
+    .small{color:var(--soft); font-size:.86rem}
+    .check{display:flex; align-items:center; gap:8px; margin-top:10px}
+    .check input{width:20px; height:20px}
+    .dp{display:flex; align-items:center; gap:10px; margin-top:8px}
+    .dp .bar{height:12px; width:220px}
+    .foot-modal{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:6px; flex-wrap:wrap}
+    .reward{color:var(--gold); font-weight:600}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <div class="logo">★</div>
+      <div>
+        <h1>RENACIMIENTO PLENISISTA</h1>
+        <div class="sub">Ciclo de 30 días · Inicio del ciclo: 18/10/2025</div>
+        <div class="head-actions">
+          <button id="btnToday" class="ghost">Ir al día de hoy</button>
+          <button id="btnExport" class="ok">Exportar progreso</button>
+          <button id="btnReset" class="warn">Reiniciar</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section class="card">
+      <div class="pad">
+        <div class="stats">
+          <div class="stat">Progreso total: <b id="statPct">0%</b></div>
+          <div class="stat">Días completos: <b id="statDays">0/30</b></div>
+          <div class="stat">Racha (desde día 1): <b id="statStreak">0</b></div>
+        </div>
+        <div class="bar"><div id="barTotal"></div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="pad">
+        <h2 style="margin:0 0 10px 0; font-size:1.05rem">Tu viaje de 30 días</h2>
+        <div class="grid" id="grid"></div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="site">
+    <div class="foot">
+      <div>© <span id="yy"></span> · Creado para <span class="brand2">Agustín Nicolás Almar</span></div>
+      <div style="opacity:.8">“Elijo esta acción porque me hace pleno.”</div>
+    </div>
+  </footer>
+
+  <!-- Modal día -->
+  <div class="backdrop" id="backdrop" aria-hidden="true" role="dialog">
+    <div class="modal">
+      <header>
+        <h2 id="mTitle">Día</h2>
+        <button id="mClose">Cerrar</button>
+      </header>
+      <div class="content">
+        <div class="chips">
+          <span class="chip" id="mPhase"></span>
+          <span class="chip" id="mEnergy"></span>
+          <span class="chip" id="mSymbol"></span>
+        </div>
+        <div class="m-phrase" id="mPhrase"></div>
+
+        <div class="modules" id="modList"></div>
+
+        <div class="foot-modal">
+          <div class="dp">
+            <div class="bar"><div id="mBar"></div></div>
+            <span id="mPct">0%</span>
+          </div>
+          <div class="reward" id="mReward"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const START_DATE = new Date('2025-10-18T00:00:00'); // inicio
+  const KEY = 'renacimiento-plenisista-v5'; // storage limpio
+
+  function mods(arr){
+    let total = arr.reduce((s,m)=>s+(m.weight||0),0);
+    if(total!==100 && total>0){
+      arr = arr.map(m => ({...m, weight: Math.round((m.weight/total)*100)}));
+    }
+    return arr;
+  }
+
+  const days = [
+    {n:1, title:"El Despertar del Propósito", phase:"🔵 Reencuentro", energy:"🌙 Introspectiva", symbol:"🌟 Origen",
+      phrase:"No busco volver atrás, busco recordar quién soy.",
+      modules: mods([
+        {type:"Reflexión", text:"¿Por qué empecé este camino? ¿Qué buscaba sanar/entender?", weight:25},
+        {type:"Lectura", text:"Releé un fragmento del Plenisismo o un texto antiguo y subrayá una frase viva.", weight:25},
+        {type:"Ritual", text:"Encendé una vela o luz tenue y decí: “Hoy elijo volver a mí”.", weight:25},
+        {type:"Registro", text:"Tres palabras que definan el 'yo' que quiere renacer.", weight:25}
+      ]),
+      reward:"Palabra desbloqueada: Origen"
+    },
+    {n:2, title:"Desintoxicación Sensorial", phase:"🔵 Reencuentro", energy:"🍃 Limpieza", symbol:"🌫️ Silencio",
+      phrase:"El silencio también habla de mí.",
+      modules: mods([
+        {type:"Acción", text:"24 h sin redes, reels, shorts ni porno. Solo uso funcional del celu.", weight:40},
+        {type:"Movimiento", text:"Caminata sin auriculares ni objetivo. Sentí el entorno.", weight:20},
+        {type:"Reflexión", text:"A la noche: ¿Qué escuché hoy dentro mío que no escuchaba hace tiempo?", weight:20},
+        {type:"Cierre", text:"Agradecé tres cosas simples de este día.", weight:20}
+      ]),
+      reward:"Palabra desbloqueada: Silencio"
+    },
+    {n:3, title:"Reencuentro con el Cuerpo", phase:"🔵 Reencuentro", energy:"🔥 Vitalidad", symbol:"⚡ Presencia",
+      phrase:"Este cuerpo me sostiene; este cuerpo me pertenece.",
+      modules: mods([
+        {type:"Acción", text:"Gym o movimiento consciente. Objetivo: presencia, no rendimiento.", weight:40},
+        {type:"Respiración", text:"5 minutos de respiración/escaneo corporal.", weight:20},
+        {type:"Reflexión", text:"¿Qué parte de mi cuerpo pide cuidado?", weight:20},
+        {type:"Ritual", text:"Cerrá el día con ducha fría o meditación breve.", weight:20}
+      ]),
+      reward:"Palabra desbloqueada: Presencia"
+    },
+    {n:4, title:"Carta al Yo del Fuego", phase:"🔵 Reencuentro", energy:"❤️ Emocional", symbol:"🔥 Llama interior",
+      phrase:"Sigo siendo ese fuego, aunque hoy arda distinto.",
+      modules: mods([
+        {type:"Carta", text:"Escribí a tu 'yo fuego': qué soñaba, qué quería construir.", weight:40},
+        {type:"Análisis", text:"Subrayá las palabras más vivas de la carta.", weight:30},
+        {type:"Acción", text:"Respirar frente al espejo: 4-4-6 x 5 ciclos.", weight:20},
+        {type:"Cierre", text:"Frase: “No apagué el fuego; lo guardé para cuando hiciera frío”.", weight:10}
+      ]),
+      reward:"Símbolo desbloqueado: Llama interior"
+    },
+    {n:5, title:"Reconexión Espiritual", phase:"🔵 Reencuentro", energy:"🕊️ Calma", symbol:"✨ Mirada plena",
+      phrase:"Miro la vida con los mismos ojos con los que ella me ve: los de amor.",
+      modules: mods([
+        {type:"Silencio", text:"15 minutos de silencio o meditación.", weight:30},
+        {type:"Credo", text:"Repetí tu credo personal u oración propia.", weight:30},
+        {type:"Gratitud", text:"Agradecé tres cosas reales (no ideales).", weight:20},
+        {type:"Registro", text:"¿Qué parte de mí necesita más amor?", weight:20}
+      ]),
+      reward:"Símbolo: Mirada plena"
+    },
+    {n:6, title:"Revisión Honesta", phase:"🔵 Reencuentro", energy:"🌘 Orden interno", symbol:"🧭 Claridad",
+      phrase:"La honestidad depura: lo que drena se suelta; lo que enciende se cultiva.",
+      modules: mods([
+        {type:"Lista", text:"Anotá: (1) lo que me drena (2) lo que me enciende (3) lo que ya no me representa.", weight:50},
+        {type:"Depurar", text:"Tachá lo que no querés arrastrar al próximo ciclo.", weight:25},
+        {type:"Reflexión", text:"¿Qué parte de mí estoy dispuesto a dejar morir?", weight:25}
+      ]),
+      reward:"Palabra: Claridad"
+    },
+    {n:7, title:"Cierre de Reencuentro", phase:"🔵 Reencuentro", energy:"☀️ Renovadora", symbol:"🌄 Despertar",
+      phrase:"La plenitud no está en lo nuevo: está en mirar distinto.",
+      modules: mods([
+        {type:"Lectura", text:"Releé lo que escribiste esta semana.", weight:30},
+        {type:"Resumen", text:"¿Qué aprendí de mí esta semana? (5 líneas)", weight:30},
+        {type:"Ritual", text:"Paseo lento o lavar manos con agua fría para 'soltar lo viejo'.", weight:20},
+        {type:"Registro", text:"Una decisión concreta para la próxima fase.", weight:20}
+      ]),
+      reward:"Símbolo: Despertar"
+    },
+    {n:8, title:"Definir el nuevo desafío", phase:"🟣 Expansión", energy:"💪 Activadora", symbol:"🪶 Impulso",
+      phrase:"Elijo un desafío que me da miedo… y me enciende.",
+      modules: mods([
+        {type:"Reflexión", text:"¿Qué haría si no tuviera miedo al error?", weight:30},
+        {type:"Definición", text:"Escribí tu desafío en una frase visible.", weight:30},
+        {type:"Acción", text:"Primera acción mínima (5 minutos).", weight:30},
+        {type:"Registro", text:"¿Qué emoción sentí al decidirme? (miedo/entusiasmo)", weight:10}
+      ]),
+      reward:"Palabra: Impulso"
+    },
+    {n:9, title:"Acción pequeña #1", phase:"🟣 Expansión", energy:"🔥 Movimiento", symbol:"⚙️ Constancia",
+      phrase:"Hoy muevo una pieza, no todo el tablero.",
+      modules: mods([
+        {type:"Acción", text:"Una microacción hacia tu desafío que dependa 100% de vos.", weight:50},
+        {type:"Reflexión", text:"¿Qué aprendí hoy al mantener el ritmo?", weight:30},
+        {type:"Cierre", text:"Frase: “Mi energía crece cuando actúo sin esperar”.", weight:20}
+      ]),
+      reward:"Runa: Constancia"
+    },
+    {n:10, title:"Acción pequeña #2", phase:"🟣 Expansión", energy:"🔥 Movimiento", symbol:"⚙️ Constancia",
+      phrase:"Pequeños pasos, gran dirección.",
+      modules: mods([
+        {type:"Acción", text:"Otra microacción. Evitá medir resultados.", weight:50},
+        {type:"Registro", text:"¿Qué se volvió más fácil entre ayer y hoy?", weight:30},
+        {type:"Cierre", text:"Respiración 4-4-6 x 5 ciclos.", weight:20}
+      ]),
+      reward:"Runa: Constancia"
+    },
+    {n:11, title:"Acción pequeña #3", phase:"🟣 Expansión", energy:"🔥 Movimiento", symbol:"⚙️ Constancia",
+      phrase:"La constancia es mi forma de amar mi futuro.",
+      modules: mods([
+        {type:"Acción", text:"Una microacción que te acerque un paso más.", weight:50},
+        {type:"Reflexión", text:"¿Qué me diría el yo de 12 meses si me viera hoy?", weight:30},
+        {type:"Cierre", text:"Pequeño premio sano (placer lento).", weight:20}
+      ]),
+      reward:"Runa: Constancia"
+    },
+    {n:12, title:"Visualización del futuro pleno", phase:"🟣 Expansión", energy:"🌌 Expansiva", symbol:"🪞 Visión",
+      phrase:"Soy libre de quién soy, prisionero de quién voy a ser.",
+      modules: mods([
+        {type:"Escritura", text:"Describí tu vida en 12 meses enfocándote en sensaciones.", weight:40},
+        {type:"Imagen", text:"Dibujá o crea un mapa/vision board simple.", weight:30},
+        {type:"Ritual", text:"Visualizá 2 minutos que ya vivís así.", weight:30}
+      ]),
+      reward:"Símbolo: Visión"
+    },
+    {n:13, title:"Creación consciente I", phase:"🟣 Expansión", energy:"🛠 Creativa", symbol:"🧩 Construcción",
+      phrase:"Lo que creo, me crea.",
+      modules: mods([
+        {type:"Diseño", text:"Esbozá tu mini proyecto (texto/enseñar/espacio).", weight:35},
+        {type:"Acción", text:"20 minutos de construcción.", weight:35},
+        {type:"Registro", text:"Qué aprendí hoy del proceso.", weight:30}
+      ]),
+      reward:"Símbolo: Construcción"
+    },
+    {n:14, title:"Creación consciente II", phase:"🟣 Expansión", energy:"🛠 Creativa", symbol:"🧩 Construcción",
+      phrase:"Me expongo a aprender.",
+      modules: mods([
+        {type:"Iteración", text:"Mejora tu mini proyecto (versión 0.2).", weight:40},
+        {type:"Feedback", text:"Pedí opinión a alguien de confianza.", weight:30},
+        {type:"Reflexión", text:"Qué cambiaría mañana.", weight:30}
+      ]),
+      reward:"Símbolo: Construcción"
+    },
+    {n:15, title:"Creación consciente III", phase:"🟣 Expansión", energy:"🛠 Creativa", symbol:"🧩 Construcción",
+      phrase:"Lo que practico, se vuelve naturaleza.",
+      modules: mods([
+        {type:"Iteración", text:"Versión 0.3 del mini proyecto.", weight:45},
+        {type:"Registro", text:"Qué parte me entusiasma más ahora.", weight:25},
+        {type:"Ritual", text:"Cierre con 2 min de respiración.", weight:30}
+      ]),
+      reward:"Símbolo: Construcción"
+    },
+    {n:16, title:"La incomodidad elegida", phase:"🟣 Expansión", energy:"⚡ De salto", symbol:"⚔️ Coraje",
+      phrase:"El vértigo también es señal de vida.",
+      modules: mods([
+        {type:"Identificación", text:"Anotá 3 cosas que evitás y te harían crecer.", weight:25},
+        {type:"Desafío", text:"Elegí una y atravesala hoy.", weight:40},
+        {type:"Reflexión", text:"¿Qué parte se resistió y cuál se liberó?", weight:20},
+        {type:"Cierre", text:"Frase: “Mi miedo hoy fue mi puerta”.", weight:15}
+      ]),
+      reward:"Símbolo: Coraje"
+    },
+    {n:17, title:"Placer racional I", phase:"🟣 Expansión", energy:"💗 Sensitiva", symbol:"🌺 Disfrute consciente",
+      phrase:"El placer lento me devuelve el alma al cuerpo.",
+      modules: mods([
+        {type:"Experiencia", text:"Elegí una experiencia placentera lenta y vivila sin pantallas.", weight:45},
+        {type:"Registro", text:"Qué sentí al no apurar el momento.", weight:30},
+        {type:"Cierre", text:"Agradecé el instante vivido.", weight:25}
+      ]),
+      reward:"Símbolo: Disfrute consciente"
+    },
+    {n:18, title:"Placer racional II", phase:"🟣 Expansión", energy:"💗 Sensitiva", symbol:"🌺 Disfrute consciente",
+      phrase:"Disfrutar también es disciplina.",
+      modules: mods([
+        {type:"Repetición", text:"Repetí una experiencia lenta distinta de ayer.", weight:45},
+        {type:"Comparación", text:"Anotá diferencias con lo instantáneo.", weight:30},
+        {type:"Cierre", text:"Respirá profundo 5 veces.", weight:25}
+      ]),
+      reward:"Símbolo: Disfrute consciente"
+    },
+    {n:19, title:"Cosecha parcial I", phase:"🟣 Expansión", energy:"🌕 Gratitud", symbol:"🌾 Cosecha",
+      phrase:"Lo que llamé aburrimiento, era el alma pidiendo expansión.",
+      modules: mods([
+        {type:"Lectura", text:"Leé lo que escribiste desde el día 1.", weight:30},
+        {type:"Reflexión", text:"Qué cambió en mí desde que empecé.", weight:40},
+        {type:"Ritual", text:"Una respiración profunda por cada avance.", weight:30}
+      ]),
+      reward:"Símbolo: Cosecha"
+    },
+    {n:20, title:"Cosecha parcial II", phase:"🟣 Expansión", energy:"🌕 Gratitud", symbol:"🌾 Cosecha",
+      phrase:"Sigo eligiendo el camino, incluso cansado.",
+      modules: mods([
+        {type:"Gesto", text:"Un gesto pequeño hacia tu desafío (correo, esquema, 15’).", weight:40},
+        {type:"Registro", text:"Qué me mantiene en el camino hoy.", weight:30},
+        {type:"Cierre", text:"Mini premio sano.", weight:30}
+      ]),
+      reward:"Símbolo: Cosecha"
+    },
+    {n:21, title:"Propósito en una frase", phase:"🟢 Integración", energy:"🧠 Claridad", symbol:"🜂 Esencia",
+      phrase:"Mi propósito hoy cabe en una frase simple.",
+      modules: mods([
+        {type:"Escritura", text:"Escribí tu propósito actual en una frase.", weight:45},
+        {type:"Chequeo", text:"¿Da paz o castiga? Ajustá si hiere.", weight:30},
+        {type:"Cierre", text:"Leé la frase en voz alta 3 veces.", weight:25}
+      ]),
+      reward:"Símbolo: Esencia"
+    },
+    {n:22, title:"Alinear propósito", phase:"🟢 Integración", energy:"🧠 Claridad", symbol:"🜂 Esencia",
+      phrase:"Mi propósito me guía, no me hiere.",
+      modules: mods([
+        {type:"Pulido", text:"Pulí tu frase-propósito hasta que suene verdadera.", weight:45},
+        {type:"Visibilidad", text:"Pegala donde la veas (cuaderno/teléfono).", weight:30},
+        {type:"Registro", text:"Cómo se siente en el cuerpo leerla.", weight:25}
+      ]),
+      reward:"Símbolo: Esencia"
+    },
+    {n:23, title:"Hábitos ancla", phase:"🟢 Integración", energy:"☀️ Constancia", symbol:"⛓️ Elección",
+      phrase:"Elijo cadenas que honran mi libertad.",
+      modules: mods([
+        {type:"Definición", text:"Elegí 1 hábito ancla (mañana/tarde/noche) para 30 días.", weight:45},
+        {type:"Plan", text:"Escribí cuándo y cómo lo vas a sostener.", weight:30},
+        {type:"Cierre", text:"Primer día de práctica.", weight:25}
+      ]),
+      reward:"Símbolo: Elección"
+    },
+    {n:24, title:"Ritual matinal I", phase:"🟢 Integración", energy:"☀️ Constancia", symbol:"⏰ Ritual",
+      phrase:"Despertar es un acto sagrado.",
+      modules: mods([
+        {type:"Diseño", text:"Diseñá tu ritual: cuerpo + mente + espíritu (10–20 min).", weight:40},
+        {type:"Ejecución", text:"Aplicalo hoy tal cual.", weight:40},
+        {type:"Registro", text:"Qué parte te reconecta más.", weight:20}
+      ]),
+      reward:"Símbolo: Ritual"
+    },
+    {n:25, title:"Ritual matinal II", phase:"🟢 Integración", energy:"☀️ Constancia", symbol:"⏰ Ritual",
+      phrase:"Mi mañana me pertenece.",
+      modules: mods([
+        {type:"Iteración", text:"Ajustá tu ritual y repetilo.", weight:50},
+        {type:"Registro", text:"Qué cambiarías para sostenerlo 30 días.", weight:30},
+        {type:"Cierre", text:"Compromiso: lo sostengo aunque esté cansado.", weight:20}
+      ]),
+      reward:"Símbolo: Ritual"
+    },
+    {n:26, title:"Agradecer al caos", phase:"🟢 Integración", energy:"🌙 Reflexiva", symbol:"🌀 Resiliencia",
+      phrase:"Gracias, caos, por frenarme a tiempo.",
+      modules: mods([
+        {type:"Carta", text:"Escribí una carta al 'bucle' agradeciendo el freno.", weight:45},
+        {type:"Reflexión", text:"¿Qué aprendí al perder el control?", weight:30},
+        {type:"Ritual", text:"Respirá profundo 5 veces y soltá.", weight:25}
+      ]),
+      reward:"Símbolo: Resiliencia"
+    },
+    {n:27, title:"Legado I", phase:"🟢 Integración", energy:"🔆 Inspiradora", symbol:"📜 Huella",
+      phrase:"Transmitir es inmortalizar lo aprendido.",
+      modules: mods([
+        {type:"Diseño", text:"Si enseñaras tu proceso hoy, ¿qué dejarías dicho? (bosquejo)", weight:45},
+        {type:"Formato", text:"Elegí formato: texto, audio o video.", weight:30},
+        {type:"Registro", text:"Qué te gustaría que alguien reciba de vos.", weight:25}
+      ]),
+      reward:"Símbolo: Huella"
+    },
+    {n:28, title:"Legado II", phase:"🟢 Integración", energy:"🔆 Inspiradora", symbol:"📜 Huella",
+      phrase:"Mi proceso vale para alguien más.",
+      modules: mods([
+        {type:"Compartir", text:"Compartí una parte con alguien de confianza.", weight:45},
+        {type:"Reflexión", text:"Cómo te sentiste al exponerte/entregar.", weight:30},
+        {type:"Cierre", text:"Anotá un ajuste o mejora.", weight:25}
+      ]),
+      reward:"Símbolo: Huella"
+    },
+    {n:29, title:"Descanso consciente", phase:"🟢 Integración", energy:"💤 Receptiva", symbol:"🌿 Pausa",
+      phrase:"Descansar por elección también es crecer.",
+      modules: mods([
+        {type:"Descanso", text:"Elegí una forma de descansar con presencia (peli, siesta, paseo).", weight:60},
+        {type:"Higiene", text:"Cero redes/estímulos rápidos durante el descanso.", weight:20},
+        {type:"Registro", text:"Cómo se siente descansar sin culpa.", weight:20}
+      ]),
+      reward:"Símbolo: Pausa"
+    },
+    {n:30, title:"Cierre del ciclo", phase:"🟢 Integración", energy:"🌕 Plenitud", symbol:"🕊️ Renacimiento",
+      phrase:"No busco el éxito, busco el sentido. Y en ese sentido, vuelvo a nacer.",
+      modules: mods([
+        {type:"Lectura", text:"Releé tu texto del Día 1.", weight:20},
+        {type:"Reflexión", text:"Escribí: “Después de esta tormenta, descubrí que…”", weight:40},
+        {type:"Ritual", text:"Encendé una vela o incienso y cerrá el ciclo.", weight:25},
+        {type:"Gratitud", text:"Agradecete por haber llegado.", weight:15}
+      ]),
+      reward:"Título desbloqueado: Renacido Plenisista"
+    }
+  ];
+
+  const DEFAULT_STATE = {tasks:{}, streak:0};
+  let STATE;
+  try{ STATE = JSON.parse(localStorage.getItem(KEY)) || DEFAULT_STATE; } catch(e){ STATE = DEFAULT_STATE; }
+
+  const grid = document.getElementById('grid');
+  const barTotal = document.getElementById('barTotal');
+  const statPct = document.getElementById('statPct');
+  const statDays = document.getElementById('statDays');
+  const statStreak = document.getElementById('statStreak');
+  document.getElementById('yy').textContent = new Date().getFullYear();
+
+  function save(){ localStorage.setItem(KEY, JSON.stringify(STATE)); }
+
+  function dayProgress(n){
+    const key = 'd'+n;
+    const tasks = STATE.tasks[key] || {};
+    const d = days.find(x=>x.n===n);
+    let pct = 0;
+    d.modules.forEach((m,i)=>{ if(tasks[i]) pct += m.weight; });
+    return Math.max(0, Math.min(100, pct));
+  }
+
+  function computeTotals(){
+    let done=0, sum=0;
+    days.forEach(d => {
+      const p = dayProgress(d.n);
+      if(p>=100) done++;
+      sum += p;
+    });
+    const totalPct = Math.round(sum / (days.length));
+    statPct.textContent = totalPct+'%';
+    barTotal.style.width = totalPct+'%';
+    statDays.textContent = done+'/'+days.length;
+    let st=0;
+    for(let i=1;i<=days.length;i++){
+      if(dayProgress(i)>=100) st++; else break;
+    }
+    STATE.streak = st;
+    statStreak.textContent = st;
+    save();
+  }
+
+  function renderGrid(){
+    grid.innerHTML = '';
+    days.forEach(d => {
+      const card = document.createElement('article');
+      card.className = 'day';
+      const pct = dayProgress(d.n);
+      if(pct>=100) card.classList.add('done');
+      card.innerHTML = `
+        <div class="topline">
+          <div class="title">Día ${d.n}</div>
+          <div class="badge">${d.phase.split(' ')[0]} ${d.symbol.split(' ')[0]}</div>
+        </div>
+        <div class="phrase">${d.phrase}</div>
+        <div class="actions">
+          <span style="color:var(--soft)">${pct}%</span>
+          <button class="open" data-open="${d.n}">Abrir</button>
+        </div>
+        <div class="phase">${d.phase} · ${d.energy}</div>
+      `;
+      grid.appendChild(card);
+    });
+    attachOpen();
+    computeTotals();
+  }
+
+  // modal logic
+  const backdrop = document.getElementById('backdrop');
+  const mTitle = document.getElementById('mTitle');
+  const mPhase = document.getElementById('mPhase');
+  const mEnergy = document.getElementById('mEnergy');
+  const mSymbol = document.getElementById('mSymbol');
+  const mPhrase = document.getElementById('mPhrase');
+  const modList = document.getElementById('modList');
+  const mBar = document.getElementById('mBar');
+  const mPct = document.getElementById('mPct');
+  const mReward = document.getElementById('mReward');
+
+  let currentDay = 1;
+
+  function attachOpen(){
+    grid.querySelectorAll('button[data-open]').forEach(b => {
+      b.addEventListener('click', ()=> openDay(parseInt(b.getAttribute('data-open'),10)));
+    });
+  }
+
+  function openDay(n){
+    currentDay = n;
+    const d = days.find(x=>x.n===n);
+    mTitle.textContent = `Día ${d.n} — ${d.title}`;
+    mPhase.textContent = d.phase;
+    mEnergy.textContent = d.energy;
+    mSymbol.textContent = d.symbol;
+    mPhrase.textContent = '“'+d.phrase+'”';
+    mReward.textContent = (dayProgress(n)>=100) ? d.reward : '';
+
+    // modules
+    modList.innerHTML = '';
+    const key = 'd'+n;
+    const tasks = STATE.tasks[key] || {};
+    d.modules.forEach((m,i)=>{
+      const box = document.createElement('div');
+      box.className = 'mod';
+      box.innerHTML = `
+        <h3>${m.type}</h3>
+        <p>${m.text}</p>
+        <div class="small">Peso: ${m.weight}%</div>
+        <label class="check">
+          <input type="checkbox" data-mod="${i}" ${tasks[i]?'checked':''}>
+          <span>Hecho</span>
+        </label>
+      `;
+      modList.appendChild(box);
+    });
+    modList.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', (e)=>{
+        const idx = e.target.getAttribute('data-mod');
+        const key = 'd'+currentDay;
+        STATE.tasks[key] = STATE.tasks[key] || {};
+        STATE.tasks[key][idx] = e.target.checked;
+        save();
+        updateModalProgress();
+        renderGrid();
+      });
+    });
+
+    updateModalProgress();
+    backdrop.style.display = 'grid';
+    backdrop.setAttribute('aria-hidden','false');
+  }
+
+  function updateModalProgress(){
+    const pct = dayProgress(currentDay);
+    mBar.style.width = pct+'%';
+    mPct.textContent = pct+'%';
+    const d = days.find(x=>x.n===currentDay);
+    mReward.textContent = (pct>=100)? d.reward : '';
+  }
+
+  document.getElementById('mClose').addEventListener('click', closeModal);
+  document.getElementById('backdrop').addEventListener('click', (e)=>{ if(e.target===backdrop) closeModal(); });
+  function closeModal(){ backdrop.style.display='none'; backdrop.setAttribute('aria-hidden','true'); }
+
+  // controls top
+  document.getElementById('btnReset').addEventListener('click', ()=>{
+    if(confirm('¿Reiniciar todo el progreso?')){
+      localStorage.removeItem(KEY); location.reload();
+    }
+  });
+  document.getElementById('btnExport').addEventListener('click', ()=>{
+    const payload = JSON.stringify(STATE, null, 2);
+    const blob = new Blob([payload], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'renacimiento-plenisista-export.json';
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  });
+  document.getElementById('btnToday').addEventListener('click', ()=>{
+    const now = new Date();
+    const diff = Math.floor((now - START_DATE)/(1000*60*60*24));
+    let idx = (diff>=0 && diff<days.length)? diff+1 : 1;
+    openDay(idx);
+  });
+
+  // initial render
+  renderGrid();
+})();
+</script>
+</body>
+</html>
